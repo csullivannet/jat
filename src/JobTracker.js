@@ -316,8 +316,9 @@ const JobTracker = () => {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">
               {editingJob ? 'Edit Application' : 'Add New Application'}
             </h2>
@@ -424,15 +425,15 @@ const JobTracker = () => {
                   placeholder="Salary, benefits, start date, etc."
                   value={formData.offerDetails}
                   onChange={(e) => setFormData({ ...formData, offerDetails: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-20 resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] max-h-32 resize-y"
                 />
               </div>
 
-              <div className="flex gap-2 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition-colors"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-md transition-colors font-medium"
                 >
                   {editingJob ? 'Update' : 'Add'} Application
                 </button>
@@ -453,11 +454,12 @@ const JobTracker = () => {
                       offerDetails: ''
                     });
                   }}
-                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded-md transition-colors"
+                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2.5 px-4 rounded-md transition-colors font-medium"
                 >
                   Cancel
                 </button>
               </div>
+            </div>
             </div>
           </div>
         </div>
