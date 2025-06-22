@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Calendar, FileText, Building, User, DollarSign, Eye, Upload, Download, Save } from 'lucide-react';
 
 const JobTracker = () => {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(() => {
+    const savedJobs = localStorage.getItem('jobTrackerData');
+    return savedJobs ? JSON.parse(savedJobs) : [];
+  });
   const [showForm, setShowForm] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
   const [formData, setFormData] = useState({
@@ -18,6 +21,10 @@ const JobTracker = () => {
   });
   const [viewingFile, setViewingFile] = useState(null);
   const [showImportExport, setShowImportExport] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('jobTrackerData', JSON.stringify(jobs));
+  }, [jobs]);
 
   const stages = [
     'Applied',
