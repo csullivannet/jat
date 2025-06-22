@@ -4,7 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-JAT (Job Application Tracker) is a React-based Electron desktop application for tracking job applications. It can run as both a web application and a native desktop app, with local data persistence and file upload capabilities.
+JAT (Job Application Tracker) is a React-based Electron desktop application for tracking job applications. It can run as
+both a web application and a native desktop app, with local data persistence and file upload capabilities.
+
+It ALWAYS RUNS LOCALLY! It makes no calls to remote services and all data remains local.
 
 ## Development Commands
 

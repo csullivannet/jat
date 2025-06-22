@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Calendar, FileText, Building, User, DollarSign, Eye, Upload, Download, Save, Moon, Sun } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
+
+// Configure PDF.js worker to use local file
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 const JobTracker = () => {
   const [jobs, setJobs] = useState(() => {
@@ -25,6 +29,7 @@ const JobTracker = () => {
   });
   const [viewingFile, setViewingFile] = useState(null);
   const [showImportExport, setShowImportExport] = useState(false);
+  const [numPages, setNumPages] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('jobTrackerData', JSON.stringify(jobs));
@@ -80,7 +85,13 @@ const JobTracker = () => {
 
   const handleViewFile = (fileData, fileName) => {
     setViewingFile({ data: fileData, name: fileName });
+    setNumPages(null);
   };
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+
 
   const exportData = () => {
     try {
@@ -504,24 +515,39 @@ const JobTracker = () => {
                 ×
               </button>
             </div>
-            <div className="flex-1 p-4 overflow-auto dark:bg-gray-800">
+            <div className="flex-1 flex flex-col overflow-hidden">
               {viewingFile.data.startsWith('data:application/pdf') ? (
-                <iframe
-                  src={viewingFile.data}
-                  className="w-full h-full border-0"
-                  title={viewingFile.name}
-                />
+                <div className="flex-1 p-4 overflow-auto bg-gray-100 dark:bg-gray-900">
+                  <div className="flex flex-col items-center space-y-4">
+                    <Document
+                      file={viewingFile.data}
+                      onLoadSuccess={onDocumentLoadSuccess}
+                      className="max-w-full"
+                    >
+                      {Array.from(new Array(numPages), (el, index) => (
+                        <Page
+                          key={`page_${index + 1}`}
+                          pageNumber={index + 1}
+                          className="shadow-lg mb-4"
+                          renderTextLayer={false}
+                          renderAnnotationLayer={false}
+                          width={Math.min(window.innerWidth * 0.7, 700)}
+                        />
+                      ))}
+                    </Document>
+                  </div>
+                </div>
               ) : viewingFile.data.startsWith('data:text/') ? (
-                <div className="w-full h-full">
+                <div className="flex-1 p-4 overflow-auto">
                   <pre className="whitespace-pre-wrap text-sm text-gray-900 dark:text-gray-100">
                     {atob(viewingFile.data.split(',')[1])}
                   </pre>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex-1 flex items-center justify-center">
                   <div className="text-center">
                     <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-                    <p className="text-gray-600 mb-4">Cannot preview this file type</p>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">Cannot preview this file type</p>
                     <a
                       href={viewingFile.data}
                       download={viewingFile.name}
