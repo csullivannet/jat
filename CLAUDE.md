@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-JAT (Job Application Tracker) is a React-based Electron desktop application for tracking job applications. It can run as
+JAT (Job Application Tracker) is a React-based Tauri desktop application for tracking job applications. It can run as
 both a web application and a native desktop app, with local data persistence and file upload capabilities.
 
 It ALWAYS RUNS LOCALLY! It makes no calls to remote services and all data remains local.
@@ -13,33 +13,30 @@ It ALWAYS RUNS LOCALLY! It makes no calls to remote services and all data remain
 
 ### Core Development
 - `npm install` - Install dependencies
-- `npm run dev` - Start webpack dev server at http://localhost:8080 (web version)
-- `npm start` - Run Electron desktop application locally
+- `npm run dev` - Start webpack dev server at http://localhost:3000 (web version)
+- `npm run tauri:dev` - Run Tauri desktop application in development mode
 - `npm run build` - Build production web bundle to `build/` directory
 
 ### Distribution
-- `npm run pack` - Package Electron app (no installer)
-- `npm run dist` - Build and create distributable packages
-- `npm run dist:win` - Build Windows executables (.exe and portable)
-- `npm run dist:all` - Build for all platforms (Windows, Linux, macOS)
+- `npm run tauri:build` - Build Tauri desktop application (Windows MSI/NSIS installers)
 
 ### Build Process
 - Webpack builds the React app to `build/` directory
-- Electron packages the app with `src/main.js` as the main process
-- Built files are output to `dist/` directory for distribution
+- Tauri packages the app with Rust backend
+- Built files are output to `src-tauri/target/release/bundle/` directory for distribution
 
 ## Architecture
 
 ### Application Structure
 - **React SPA**: Single-page application built with React 18
-- **Electron Wrapper**: Desktop app using Electron 25 with secure defaults
-- **Data Persistence**: localStorage for web, same storage mechanism in Electron
+- **Tauri Wrapper**: Desktop app using Tauri 2.x with Rust backend
+- **Data Persistence**: localStorage for web, same storage mechanism in Tauri
 - **File Handling**: Base64 encoding for file uploads with in-browser preview
 
 ### Key Components
 - `src/JobTracker.js` - Main React component containing all application logic
 - `src/index.js` - React entry point and DOM mounting
-- `src/main.js` - Electron main process configuration
+- `src-tauri/src/main.rs` - Tauri Rust main process configuration
 - `public/index.html` - HTML template with Tailwind CSS via CDN
 
 ### Data Management
@@ -63,9 +60,9 @@ It ALWAYS RUNS LOCALLY! It makes no calls to remote services and all data remain
 - Babel loader for React JSX transformation
 - CSS loader for style processing
 
-### Electron Security
-- `nodeIntegration: false` and `contextIsolation: true` for security
-- No IPC communication - app runs in renderer process only
+### Tauri Security
+- Secure by default with Rust backend
+- No IPC communication - app runs in webview only
 - File operations handled through web APIs (FileReader, localStorage)
 
 ### File Support
